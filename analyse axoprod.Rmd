@@ -1,0 +1,134 @@
+---
+title: "Analyse entreprise Axoprod"
+author: "FENIOU Dimitri"
+date: "16/07/2019"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    df_print: paged
+---
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+# Chargement des packages 
+library(rmarkdown)
+library(readr)
+library(dplyr)
+library(knitr)
+library(tinytex)
+library(ggmap)
+library(tidyverse)
+library(maps)
+library(ggmap)
+library(rmarkdown)
+library(readr)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(tinytex)
+library(rgeoapi)
+library(plyr)
+library(photon)
+library(data.table)
+library(banR)
+library(ggmap)
+library(rgeoapi)
+library(colorspace)
+library(devtools)
+library(readxl)
+```
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+# chargement des données 
+clients_carre <- read_excel("C:/Users/dimde/Desktop/Axoprod/carreblanc_clients.xlsx")
+clients_map <- read_excel("C:/Users/dimde/Desktop/Axoprod/clients_map.xlsx")
+clients_all <- read_excel("C:/Users/dimde/Desktop/Axoprod/clients_all.xlsx")
+carreblanc_clients <- read_excel("C:/Users/dimde/Desktop/Axoprod/carreblanc_clients.xlsx")
+
+clients_2018 <- read_excel("C:/Users/dimde/Desktop/Axoprod/clients_2018.xlsx")
+```
+# Carte des clients et prospect 
+
+```{r}
+
+```
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+#Set your API Key
+
+register_google(key = "")
+
+
+# creation carte avec carre blanc 
+
+france <- c(lon =2.213749,lat = 46.227638)
+
+map_france <- get_map(location = france,zoom = 6,1,maptype =  "roadmap",language = "fr_FR")
+
+
+clients_map$longitude = as.numeric(as.character(clients_map$longitude))
+
+clients_map$latitude = as.numeric(as.character(clients_map$latitude))
+
+
+
+
+
+ggmap(map_france)+
+    geom_point(data = clients_map,stat ="identity", position = "dodge", aes(longitude, latitude, color = clients_map$type), size = 1,5) +
+  labs(title = "Cartographie des Clients et Prospects" size = 10,fill = "Clients et Prospects",
+        x = "", 
+        y = "")
+```
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+
+clients_2018$longitude = as.numeric(as.character(clients_2018$longitude))
+
+clients_2018$latitude = as.numeric(as.character(clients_2018$latitude))
+
+ggmap(map_france)+
+  geom_point(aes(x = longitude, y = latitude, size=montant),
+             data =clients_2018 , alpha = .5, color="darkred")+
+  scale_size(range = c(0,5))
+  
+```
+# Analyse des ventes 2018
+
+
+
+
+## Montant des ventes par Clients (Paris)
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+# client paris CA
+map_paris <- get_googlemap(location = paris,center= c(2.333333,48.866667),size = c(1200, 1200), scale = 2,zoom = 11,maptype =  "roadmap",language = "fr_FR",style = 'feature:road|element:all|visibility:simplified&style=feature:administrative.locality|element:labels|visibility:simplified&style=feature:landscape|element:labels|visibility:off&style=feature:road|element:labels|visibility:off')
+ggmap(map_paris)+
+  geom_point(aes(x = longitude, y = latitude, size=montant),
+             data = clients_2018, alpha = .5, color="darkred")+
+  scale_size(range = c(0, 10))
+```
+## Montant des ventes par Clients (Sud-Est)
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+
+# clients sud est ca
+marseille <- c(longitude = 5.450448,latitude = 44.380355)
+map_sud <- get_googlemap(location = marseille,center= c(5.450448,44.380355),size = c(640, 640), scale = 2,zoom = 7,maptype =  "roadmap",language = "fr_FR",style ='feature:road|element:all|visibility:simplified&style=feature:administrative.locality|element:labels|visibility:simplified&style=feature:landscape|element:labels|visibility:off&style=feature:road|element:labels|visibility:off')
+
+ggmap(map_sud)+
+  geom_point(aes(x = longitude, y = latitude, size=montant),
+             data = clients_2018, alpha = .5, color="darkred")+
+  scale_size(range = c(0, 10))
+
+
+```
+## Montant des ventes par Clients (Sud-Ouest)
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+# clients sud ouest ca
+map_sudest <- get_googlemap(center= c(0.483392,44.853806),size = c(640, 640), scale = 2,zoom = 7,maptype =  "roadmap",language = "fr_FR",style ='feature:road|element:all|visibility:simplified&style=feature:administrative.locality|element:labels|visibility:simplified&style=feature:landscape|element:labels|visibility:off&style=feature:road|element:labels|visibility:off')
+ggmap(map_sudest)+
+  geom_point(aes(x = longitude, y = latitude, size=montant),
+             data = clients_2018, alpha = .5, color="darkred")+
+  scale_size(range = c(0, 10))
+
+```
+
